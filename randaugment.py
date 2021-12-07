@@ -203,12 +203,13 @@ class RandAugmentPC(object):
 
 
 class RandAugmentMC(object):
-    def __init__(self, n, m):
+    def __init__(self, n, m, cutout):
         assert n >= 1
         assert 1 <= m <= 10
         self.n = n
         self.m = m
         self.augment_pool = fixmatch_augment_pool()
+        self.cutout = cutout
 
     def __call__(self, img):
         ops = random.choices(self.augment_pool, k=self.n)
@@ -216,5 +217,5 @@ class RandAugmentMC(object):
             v = np.random.randint(1, self.m)
             if random.random() < 0.5:
                 img = op(img, v=v, max_v=max_v, bias=bias)
-        img = CutoutAbs(img, 16)
+        img = CutoutAbs(img, self.cutout)
         return img
